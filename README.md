@@ -18,6 +18,21 @@ claude --plugin-dir /path/to/ai-dev
 /reload-plugins
 ```
 
+## Зависимости
+
+Доки и (будущие) скиллы предполагают, что в Claude Code сессии установлены:
+
+- **`compound-engineering`** — обязательно. `ai_dev.md` ссылается на
+  `ce-strategy`, `ce-brainstorm`, `ce-plan`, `ce-doc-review` как ключевые
+  шаги процесса. Без них всё работает, но руками и хуже.
+- **`superpowers`** — опционально. Некоторые практики (`writing-plans`,
+  `subagent-driven-development`, `using-git-worktrees`) пересекаются с тем,
+  что описано здесь. Если стоит — пригодится; если нет — доки
+  самодостаточны.
+
+Если плагины ещё не установлены: `/plugin marketplace add anthropic-marketplace`
+(или подходящий маркетплейс), затем `/plugin install compound-engineering`.
+
 ## Что внутри
 
 - [`docs/ai_dev.md`](docs/ai_dev.md) — общая философия: документация в
