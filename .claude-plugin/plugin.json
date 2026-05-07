@@ -1,0 +1,15 @@
+{
+  "name": "ai-dev",
+  "description": "AI-разработка через сабагентов: общие принципы + рабочие скиллы (Flutter-архитектура, оркестрация, ревью, гейты).",
+  "version": "0.1.0",
+  "author": {
+    "name": "kelegorm",
+    "email": "kelegorm1@gmail.com"
+  },
+  "homepage": "https://github.com/kelegorm/ai-dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kelegorm/ai-dev.git"
+  },
+  "license": "MIT"
+}
