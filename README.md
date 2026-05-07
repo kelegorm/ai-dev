@@ -47,6 +47,14 @@ claude --plugin-dir /path/to/ai-dev
 - `skills/` — рабочие скиллы. Пока пусто; наполняется по мере того, как
   одна и та же процедура повторяется в третий раз.
 
+## Связанные репозитории
+
+- [`kelegorm/good_flutter_app`](https://github.com/kelegorm/good_flutter_app)
+  — литературный пример архитектуры из [`docs/arch.md`](docs/arch.md) в
+  работающем виде: шаблонный Flutter-проект со всеми слоями, purity-тестами,
+  strict lint и `flutter_bloc` + `auto_route`. Использовать как референс
+  при бутстрапе нового проекта.
+
 ## Структура
 
 ```

@@ -1,5 +1,12 @@
 # Архитектура Flutter-приложения
 
+Литературный пример этой архитектуры в работающем коде —
+[`kelegorm/good_flutter_app`](https://github.com/kelegorm/good_flutter_app).
+Шаблонный проект со всем, что описано ниже: слоями `lib/{app, domain,
+ex_systems, ui}/`, `flutter_bloc` + `auto_route`, strict lint,
+per-layer purity-тесты. Использовать как справочник при бутстрапе нового
+проекта.
+
 Подход держится на нескольких устоявшихся идеях. **Layered architecture** —
 код разделён на слои с односторонним направлением зависимостей. **Ports &
 Adapters (Hexagonal)** — UI и бизнес-логика работают через интерфейсы;
