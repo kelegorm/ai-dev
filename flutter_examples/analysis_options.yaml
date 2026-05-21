@@ -1,0 +1,17 @@
+# Static analysis config for the flutter_examples project.
+#
+# Generated `*.gr.dart` files (auto_route) are excluded — they carry their own
+# `ignore_for_file: type=lint` header, but excluding them keeps analyzer output
+# focused on hand-written code.
+
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - "**/*.gr.dart"
+
+linter:
+  rules:
+    # ai-dev convention: absolute package imports only, no relative lib imports.
+    always_use_package_imports: true
+    avoid_relative_lib_imports: true

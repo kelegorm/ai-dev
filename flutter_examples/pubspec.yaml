@@ -1,0 +1,30 @@
+name: flutter_examples
+description: "Standalone Flutter UI-trick examples for the ai-dev repository."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Both examples drive navigation through auto_route.
+  auto_route: ^11.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+  # auto_route route-class code generation (`*.gr.dart`).
+  auto_route_generator: ^10.5.0
+  build_runner: ^2.15.0
+
+flutter:
+  uses-material-design: true
