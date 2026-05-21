@@ -1,0 +1,73 @@
+include: package:flutter_lints/flutter.yaml
+
+# ---------------------------------------------------------------------------
+# Architectural import rules
+# ---------------------------------------------------------------------------
+#
+# Direction of dependency:
+#   app/  ->  ui/  ->  domain/
+#         \         \
+#          \          app_ports/  (interfaces only)
+#           ex_systems/  ->  domain/
+#
+# Notes:
+#   - Blocs/states/events live in `ui/<screen>/bloc/`. Cross-screen domain
+#     services live in `domain/`.
+#   - `app_ports/` holds cross-cutting port interfaces (navigation, …);
+#     their implementations live in `ex_systems/` or `app/`.
+#   - `ui/<screen_a>/` forbids importing `ui/<screen_b>/`. Screens are
+#     composed in `app/navigation/`. Shared ui subfolders that ARE
+#     legitimate cross-screen imports: `common/`, `design_system/`.
+#
+# Enforced by per-layer purity tests under `test/architecture/`:
+#   - domain_purity_test.dart     (allowlist: dart + a few code-gen pkgs)
+#   - app_ports_purity_test.dart  (allowlist: dart + domain)
+#   - ex_systems_purity_test.dart (allowlist: dart + domain + app_ports
+#                                  + storage pkgs)
+#   - ui_purity_test.dart         (allowlist: dart + domain + app_ports
+#                                  + flutter/bloc; cross-screen ui imports
+#                                  are forbidden, shared subfolders exempt)
+# `app/` is the composition root and has no purity test. The tests run
+# as part of `flutter test --no-pub` and fail CI on any violation; they
+# are the canonical gate.
+# ---------------------------------------------------------------------------
+
+analyzer:
+  plugins:
+    - dart_code_linter
+  errors:
+    # Imports must use full `package:` paths.
+    always_use_package_imports: error
+    avoid_relative_lib_imports: error
+    # Code-cleanliness rules (raised to error so CI blocks).
+    use_super_parameters: error
+    unnecessary_null_checks: error
+    unnecessary_lambdas: error
+    cascade_invocations: error
+    unawaited_futures: error
+    avoid_dynamic_calls: error
+    # Softer: nudge, don't block.
+    prefer_final_fields: warning
+
+linter:
+  rules:
+    always_use_package_imports: true
+    avoid_relative_lib_imports: true
+    use_super_parameters: true
+    unnecessary_null_checks: true
+    unnecessary_lambdas: true
+    cascade_invocations: true
+    unawaited_futures: true
+    avoid_dynamic_calls: true
+    prefer_final_fields: true
+
+# ---------------------------------------------------------------------------
+# dart_code_linter rules
+# ---------------------------------------------------------------------------
+# Adds rules that core Dart lints don't ship. Notably
+# `avoid-non-null-assertion`: bans the `!` (bang) operator outright;
+# refactor with explicit null handling or pattern matching instead.
+dart_code_linter:
+  rules:
+    avoid-non-null-assertion:
+      severity: error
