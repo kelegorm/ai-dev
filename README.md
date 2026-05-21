@@ -41,7 +41,7 @@ claude --plugin-dir /path/to/ai-dev
 - [`docs/orchestrator.md`](docs/orchestrator.md) — заготовка системного
   промпта для оркестратор-сессии: брифинг саба, проверка результата,
   типичные ошибки и реакция.
-- [`docs/arch.md`](docs/arch.md) — конкретная Flutter-архитектура:
+- [`docs/reference-architecture/`](docs/reference-architecture/README.md) — конкретная Flutter-архитектура:
   layered + ports & adapters, направления зависимостей, mechanical
   enforcement, UI/Bloc/Navigation/DesignSystem конвенции.
 - `skills/` — рабочие скиллы. Пока пусто; наполняется по мере того, как
@@ -50,7 +50,7 @@ claude --plugin-dir /path/to/ai-dev
 ## Связанные репозитории
 
 - [`kelegorm/good_flutter_app`](https://github.com/kelegorm/good_flutter_app)
-  — литературный пример архитектуры из [`docs/arch.md`](docs/arch.md) в
+  — литературный пример архитектуры из [`docs/reference-architecture/`](docs/reference-architecture/README.md) в
   работающем виде: шаблонный Flutter-проект со всеми слоями, purity-тестами,
   strict lint и `flutter_bloc` + `auto_route`. Использовать как референс
   при бутстрапе нового проекта.
@@ -64,7 +64,7 @@ ai-dev/
 ├── docs/                      # человекочитаемые принципы и шаблоны
 │   ├── ai_dev.md
 │   ├── orchestrator.md
-│   └── arch.md
+│   └── reference-architecture/
 ├── skills/                    # исполняемые скиллы (skills/<name>/SKILL.md)
 └── README.md
 ```

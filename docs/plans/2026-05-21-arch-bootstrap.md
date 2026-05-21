@@ -4,7 +4,7 @@
 
 **Goal:** Build the `arch-bootstrap` skill for the `ai-dev` plugin — it lays a greenfield Flutter project out in the reference architecture, writing the project's architecture docs, `AGENTS.md` index, and enforcement code.
 
-**Architecture:** A skill is authored by TDD per `superpowers:writing-skills` — baseline scenario (RED) before writing, scenario re-run (GREEN) after. The reference architecture (`docs/arch.md`) is first split into `docs/reference-architecture/`; `arch-bootstrap` copies those files into a new project's `docs/architecture/`, customizes them, and pulls layer skeleton + enforcement code from the `good_flutter_app` template repo.
+**Architecture:** A skill is authored by TDD per `superpowers:writing-skills` — baseline scenario (RED) before writing, scenario re-run (GREEN) after. The reference architecture (`docs/reference-architecture/`) is first split from the former monolithic doc into `docs/reference-architecture/`; `arch-bootstrap` copies those files into a new project's `docs/architecture/`, customizes them, and pulls layer skeleton + enforcement code from the `good_flutter_app` template repo.
 
 **Tech Stack:** Claude Code plugin (skills), Markdown, git, Flutter (`flutter create`), Dart.
 
@@ -38,12 +38,12 @@
 
 **Files:**
 - Create: `docs/reference-architecture/README.md`, `tech.md`, `ui.md`, `enforcement.md`
-- Delete: `docs/arch.md`
-- Modify: `README.md` (repo root), `docs/ai_dev.md` — links to `arch.md`
+- Delete: former monolithic arch doc (done — see commit)
+- Modify: `README.md` (repo root), `docs/ai_dev.md` — links to former monolithic arch doc
 
 - [ ] **Step 1: Create the four split files**
 
-Move content from `docs/arch.md` verbatim, by section:
+Move content from former monolithic arch doc verbatim, by section:
 
 - `README.md` ← intro paragraphs + `## Структура папок` + `## Архитектура` (Слои/направление, Модули, Порты, Контроллеры) + `## Стек` + `## Зафиксированный выбор`. Add a top line: this is the **эталонная** architecture (reference), not a project's.
 - `tech.md` ← `## Техническая архитектура` (DI, Сеть, Routing, Авторизация).
@@ -52,18 +52,18 @@ Move content from `docs/arch.md` verbatim, by section:
 
 Add a links block at the top of `README.md` pointing to the other three.
 
-- [ ] **Step 2: Delete `docs/arch.md` and fix inbound links**
+- [ ] **Step 2: Delete former monolithic arch doc and fix inbound links**
 
-`grep -rn "arch\.md" --include=*.md .` — update every hit. Repo `README.md` and `docs/ai_dev.md` reference `docs/arch.md`; repoint to `docs/reference-architecture/README.md`.
+`grep -rn "arch[.]md" --include=*.md .` — update every hit. Repo `README.md` and `docs/ai_dev.md` referenced the monolithic arch doc; repointed to `docs/reference-architecture/README.md`.
 
 - [ ] **Step 3: Verify no content lost, no dangling links**
 
 Run:
 ```bash
-grep -rn "arch\.md" --include=*.md . ; echo "exit: $?"
+grep -rn "arch[.]md" --include=*.md . ; echo "exit: $?"
 wc -l docs/reference-architecture/*.md
 ```
-Expected: first grep prints nothing (exit 1). Total line count across the four files ≈ original `arch.md` line count (±20 for added headers/links).
+Expected: first grep prints nothing (exit 1). Total line count across the four files ≈ original monolithic arch doc line count (±20 for added headers/links).
 
 - [ ] **Step 4: Commit**
 
