@@ -20,8 +20,8 @@ project's name and purpose, replacing the эталон's "это эталонн�
 - Yes → keep the `dio` line in the stack section and keep
   `ex_systems/network/` in the folder tree.
 - No → still keep `ex_systems/` (storage, device APIs live there), but
-  note in the tree that `network/` is unused for now. Do not delete the
-  `dio` dependency from the template — leave it; adding network later
+  note in the tree that `network/` is unused for now. The skeleton's
+  `pubspec.yaml` ships `dio` already — leave it; adding network later
   must not require re-bootstrapping.
 
 ## Q3 — Needs auth?
@@ -47,7 +47,7 @@ concrete list. Each feature maps to:
 
 List the planned `domain/<feature>/` and `ui/<screen>/` pairs explicitly
 in `README.md` so the layout is named, not implied. Do not create the
-feature folders' contents now — only name them in the doc; the skeleton
-folders come from the template.
+feature folders' contents now — only name them in the doc; the layer
+folders themselves come from the skeleton.
 
 This same list fills the `{{feature_list}}` placeholder in `AGENTS.md`.

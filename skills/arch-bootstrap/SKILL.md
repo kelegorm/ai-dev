@@ -34,20 +34,24 @@ Does `docs/architecture/` contain a file whose **first line** is exactly:
 - Yes → project is already bootstrapped. **STOP. Do not overwrite anything.**
 - No → continue.
 
-### 2. Scaffold from template
+### 2. Scaffold from the skeleton
 
-The template `kelegorm/good_flutter_app` is the **single source** of the layer skeleton, purity tests, and lint config. Do not invent any of them.
+The skeleton at `${CLAUDE_PLUGIN_ROOT}/templates/flutter-skeleton/` is the **single source** of the layer folders, stack, purity tests, and lint config. Do not invent or substitute any of them. It is a minimal runnable app (one placeholder screen) in the reference architecture — not a full app.
 
-```bash
-git clone --depth 1 https://github.com/kelegorm/good_flutter_app /tmp/gfa-template
-```
-
-From the clone, copy into the project:
-- the layer skeleton `lib/{app, app_ports, domain, ex_systems, ui}/`
-- `test/architecture/`
+Copy into the project, **overwriting** the `flutter create` defaults:
+- `lib/` — all layers plus `main.dart`
+- `test/`
 - `analysis_options.yaml`
 
-Then delete the clone's `.git` (and `/tmp/gfa-template` once copied).
+Merge the skeleton `pubspec.yaml`'s `dependencies:` and `dev_dependencies:` into the project's `pubspec.yaml` (keep the project's own `name:`, `description:`, `environment:`).
+
+**Rename the package.** The skeleton's package is `flutter_skeleton`. Rename it to the project's package everywhere it was copied:
+- in `lib/**` and `test/**` — replace `package:flutter_skeleton/` with `package:<project_name>/`
+- in `test/architecture/*_purity_test.dart` — replace `packageName: 'flutter_skeleton'` with the project name
+
+Then:
+- `flutter pub get`
+- `dart run build_runner build --delete-conflicting-outputs` — regenerates `app_router.gr.dart` for the renamed package
 
 ### 3. Customization dialog
 
@@ -73,8 +77,8 @@ Run the gate commands from the project's `enforcement.md` (`flutter analyze`, `f
 
 ## Result checklist
 
-- [ ] `lib/{app, app_ports, domain, ex_systems, ui}/` present, from the template
-- [ ] `test/architecture/` purity tests + `analysis_options.yaml` present, from the template
+- [ ] `lib/{app, app_ports, domain, ex_systems, ui}/` present, from the skeleton, package renamed
+- [ ] `test/architecture/` purity tests + `analysis_options.yaml` present, from the skeleton
 - [ ] `docs/architecture/{README,tech,ui,enforcement}.md` — README first line is the marker
 - [ ] `AGENTS.md` indexing every arch doc; `CLAUDE.md` is `@AGENTS.md`
 - [ ] gate commands run and pass
