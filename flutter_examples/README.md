@@ -1,17 +1,47 @@
 # flutter_examples
 
-A new Flutter project.
+Runnable examples of UI tricks from the `ai-dev` repository. Each example is a
+standalone mini-app with its own `main.dart`, illustrating one article from
+[`docs/flutter-tricks/`](../docs/flutter-tricks/). The package is not published
+(`publish_to: none`) and exists purely for demonstration and tests.
 
-## Getting Started
+There are two examples: **gesture coexistence** (`lib/gesture_coexistence/`) and
+**shared scaffold** (`lib/shared_scaffold/`). See
+[`docs/flutter-tricks/`](../docs/flutter-tricks/) for what each one demonstrates.
 
-This project is a starting point for a Flutter application.
+## Running the examples
 
-A few resources to get you started if this is your first Flutter project:
+Each example has its own entry point. Pick one with `-t`:
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```sh
+# Gesture coexistence
+flutter run -t lib/gesture_coexistence/main.dart
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Shared scaffold
+flutter run -t lib/shared_scaffold/main.dart
+```
+
+Install dependencies before the first run:
+
+```sh
+flutter pub get
+```
+
+Both examples drive navigation through `auto_route`, so the generated
+`*.gr.dart` files are already committed. If you change the routes, regenerate
+them:
+
+```sh
+dart run build_runner build --delete-conflicting-outputs
+```
+
+## Tests
+
+Widget and golden tests live in `test/`:
+
+```sh
+flutter test
+
+# Regenerate reference screenshots after intentional UI changes
+flutter test --update-goldens
+```
