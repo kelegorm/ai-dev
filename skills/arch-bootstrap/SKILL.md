@@ -45,13 +45,11 @@ Copy into the project, **overwriting** the `flutter create` defaults:
 
 Merge the skeleton `pubspec.yaml`'s `dependencies:` and `dev_dependencies:` into the project's `pubspec.yaml` (keep the project's own `name:`, `description:`, `environment:`).
 
-**Rename the package.** The skeleton's package is `flutter_skeleton`. Rename it to the project's package everywhere it was copied:
-- in `lib/**` and `test/**` — replace `package:flutter_skeleton/` with `package:<project_name>/`
-- in `test/architecture/*_purity_test.dart` — replace `packageName: 'flutter_skeleton'` with the project name
+**Rename the package.** The skeleton's package is `flutter_skeleton`. Replace **every** occurrence of `flutter_skeleton` in the copied `lib/**` and `test/**` files with the project's package name. This covers all three uses: `package:flutter_skeleton/` imports, `packageName: 'flutter_skeleton'` in the purity tests, and bare-string uses (the `MaterialApp` title, the placeholder screen, the widget test). Leave none behind — a missed one ships a project still named `flutter_skeleton`.
 
 Then:
 - `flutter pub get`
-- `dart run build_runner build --delete-conflicting-outputs` — regenerates `app_router.gr.dart` for the renamed package
+- `dart run build_runner build` — regenerates `app_router.gr.dart` for the renamed package
 
 ### 3. Customization dialog
 
