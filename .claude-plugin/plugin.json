@@ -7,9 +7,6 @@
     "email": "kelegorm1@gmail.com"
   },
   "homepage": "https://github.com/kelegorm/ai-dev",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kelegorm/ai-dev.git"
-  },
+  "repository": "https://github.com/kelegorm/ai-dev.git",
   "license": "MIT"
 }
