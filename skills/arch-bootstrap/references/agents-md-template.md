@@ -7,31 +7,31 @@ containing exactly `@AGENTS.md` — do not duplicate this content there.
 ---
 
 ```markdown
-# {{project_name}} — agent guide
+# {{project_name}} — гид для агентов
 
 {{project_purpose}}
 
-## Before touching code
+## Перед тем как трогать код
 
-Read `docs/architecture/` first. The architecture is fixed and
-mechanically enforced — code that breaks a layer boundary or a lint
-will fail the gate below.
+Сначала прочитай `docs/architecture/`. Архитектура зафиксирована и
+проверяется механически — код, нарушающий границу слоя или линт,
+завалит гейт ниже.
 
-## Architecture docs
+## Документы архитектуры
 
-- [docs/architecture/README.md](docs/architecture/README.md) — architecture map: layers, dependency direction, folder tree, stack
-- [docs/architecture/tech.md](docs/architecture/tech.md) — DI & scopes, networking, routing/navigation, auth
-- [docs/architecture/ui.md](docs/architecture/ui.md) — screen structure, bloc/cubit, design system, localization
-- [docs/architecture/enforcement.md](docs/architecture/enforcement.md) — purity tests, lint config, gate commands, anti-patterns
-- [docs/architecture/decisions/INDEX.md](docs/architecture/decisions/INDEX.md) — architecture decision records
+- [docs/architecture/README.md](docs/architecture/README.md) — карта архитектуры: слои, направление зависимостей, дерево папок, стек
+- [docs/architecture/tech.md](docs/architecture/tech.md) — DI и scopes, сеть, routing/навигация, авторизация
+- [docs/architecture/ui.md](docs/architecture/ui.md) — структура экрана, bloc/cubit, design system, локализация
+- [docs/architecture/enforcement.md](docs/architecture/enforcement.md) — purity-тесты, конфиг линта, гейт-команды, анти-паттерны
+- [docs/architecture/decisions/INDEX.md](docs/architecture/decisions/INDEX.md) — architecture decision records (ADR)
 
-## Features
+## Фичи
 
 {{feature_list}}
 
-## Gate — must pass before merge
+## Гейт — должен проходить до merge
 
-Run all of these; all must be green:
+Запусти все команды; все должны быть зелёными:
 
 \`\`\`
 flutter analyze --no-pub
