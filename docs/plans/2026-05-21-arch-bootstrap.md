@@ -10,6 +10,22 @@
 
 ---
 
+## Status — 2026-05-21
+
+**`arch-bootstrap` is DONE and verified.** GREEN subagent test + real-project smoke test both passed; all three gates green on a freshly bootstrapped project. Tasks 1–7 complete.
+
+Work done beyond the original plan:
+- `good_flutter_app` (locally `../good_example/`) brought up to the эталон — strict lint, `dart_code_linter`, purity tests, `data/`→`ex_systems/`, `app_ports/` extracted. Pushed to remote `kelegorm/good_flutter_app`.
+- `templates/flutter-skeleton/` built and vendored into the plugin — the skill scaffolds from it, no `git clone` at bootstrap.
+
+Key `ai-dev` commits (all pushed): `c8c5d6e` spec · `7aebfee` plan · `f28f8bc` эталон split · `257efbd` baseline · `7103a95` skill · `bbd1ec2` skeleton · `6cef9f8`/`a7e486f` skill→skeleton fixes · `9c737b7` AGENTS.md template → Russian.
+
+**Open follow-up:** the эталон `reference-architecture/README.md` folder tree lists `app/bootstrap/` and `app/session/`, which the skeleton does not contain → a bootstrapped project's README describes folders that do not exist. Decide: mark them conditional in the эталон, or add minimal stubs to the skeleton. Architectural — iterate with the user.
+
+**Not started, each its own iteration:** `arch-migrate`, `arch-audit`, the gate hook — see the spec.
+
+The per-step `- [ ]` checkboxes below are the original plan, kept as history. Reality is summarized above — notably Task 6 became "build the flutter-skeleton + fix the skill" once the GREEN test showed the template was a full example app, not a skeleton.
+
 ## Source spec
 
 `docs/specs/2026-05-21-flutter-arch-skills-design.md`. This plan covers **only `arch-bootstrap`**. `arch-migrate`, `arch-audit`, and the hook are deferred to their own brainstorms.
