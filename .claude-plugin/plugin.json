@@ -1,7 +1,7 @@
 {
   "name": "ai-dev",
   "description": "AI-разработка через сабагентов: общие принципы + рабочие скиллы (Flutter-архитектура, оркестрация, ревью, гейты).",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "kelegorm",
     "email": "kelegorm1@gmail.com"
