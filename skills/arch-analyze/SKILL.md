@@ -40,25 +40,33 @@ Place the project in exactly one state:
 | State | How to tell |
 |---|---|
 | greenfield | `lib/` empty, or only the generated `main.dart` counter template |
-| flat | real code, but `lib/` has no layer subfolders |
-| layered, no marker | `lib/` has layer-like subfolders, but no `ai-dev` marker |
+| flat | real code, but `lib/` has no organizing subfolders |
+| layered, no marker | `lib/` has organizing subfolders, but no `ai-dev` marker |
 | ai-dev, migration in progress | marker present AND `migration-progress.md` lists unfinished files |
 | ai-dev, settled | marker present AND (no ledger, or ledger lists nothing remaining) |
+
+**Organizing subfolders** = `lib/` has subfolders that deliberately
+structure the code — by layer (`domain/`, `data/`, `ui/`, `ex_systems/`),
+by kind (`models/`, `screens/`, `widgets/`), or by feature. **Flat** =
+`.dart` files sit directly in `lib/` with no such subfolders; a lone
+`lib/generated/` or `lib/l10n/` is not code organization and does not
+count.
 
 ### 4. Report
 
 Report to the user **in chat only — write no file**:
 - The state.
 - The signal-probe verdicts (one line each).
+- If the project has its own (non-`ai-dev`) architecture doc, mention it.
 - The recommendation for the state:
 
 | State | Recommendation |
 |---|---|
 | greenfield | New project → use `arch-bootstrap`. |
 | flat | Real code, no layers → use `arch-migrate`. |
-| layered, no marker | Give the probe verdicts. The project has an architecture; `ai-dev` does not manage it (no marker). If the layout deviates from the эталон (`docs/reference-architecture/` — e.g. layer names like `data/` vs `ex_systems/`), name the deviations. State plainly: bringing a hand-architected project to the эталон is **not** covered by any skill yet — it is manual or future work. |
-| ai-dev, migration in progress | Migration is underway; name the unfinished files from the ledger; `arch-migrate` continues it, extraction comes later. |
-| ai-dev, settled | The project is `ai-dev`-managed. For a drift check, use `arch-audit` — and say plainly that `arch-audit` is not built yet. |
+| layered, no marker | Give the probe verdicts. The project has an architecture; `ai-dev` does not manage it (no marker). The эталон layers are `app/ app_ports/ domain/ ex_systems/ ui/` — if the project's layout deviates (e.g. `data/` instead of `ex_systems/`, or missing `app/`/`app_ports/`), name the deviations. State plainly: bringing a hand-architected project to the эталон is **not** covered by any skill yet — it is manual or future work. |
+| ai-dev, migration in progress | Migration is underway; name the unfinished files from the ledger; `arch-migrate` continues the migration. Extracting blocs and services from the still-tangled files is a later step. |
+| ai-dev, settled | The project is `ai-dev`-managed (bootstrapped, or its migration is complete). For a drift check, use `arch-audit` — and say plainly that `arch-audit` is not built yet. |
 
 ## Do not
 

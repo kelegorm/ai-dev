@@ -46,7 +46,7 @@ dependency direction looks clean or leaks.
 
 ## Basic smells
 
-- `flutter analyze` — clean or not (read-only, safe to run).
+- `flutter analyze` — clean or not (safe to run; it does not modify source files).
 - Data preparation inside `initState` / `build` (a repository or API call
   in `initState`) → logic in the widget.
 - Very large widget files — `find lib -name '*.dart' | xargs wc -l` and
