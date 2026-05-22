@@ -26,8 +26,9 @@ Gather, without changing anything:
 |---|---|
 | `lib/` empty / bare `flutter create` | Not a migration. Tell the user: this is greenfield — use `arch-bootstrap`. Stop. |
 | Real code, no marker | Structure not laid out → go to step 3. |
+| Marker present, no `migration-progress.md` ledger | The architecture is already in place but not via this skill — most likely the project was set up with `arch-bootstrap`. Nothing for `arch-migrate` to do; tell the user and stop. (If instead a prior `arch-migrate` run was interrupted before it wrote its ledger, that is not auto-resumed — tell the user to discard the partial layer scaffolding and re-run.) |
 | Marker present, ledger lists unfinished files | Structure done. Report the remaining work (bloc/service extraction) from the ledger to the user. The extraction skills do not exist yet — say so plainly. Stop. |
-| Marker present, ledger says structure готова and lists nothing remaining | Migration complete. Report. Stop. |
+| Marker present, ledger lists nothing remaining | Migration complete. Report. Stop. |
 
 **"Bare `flutter create`"** means `lib/` holds only the generated
 `main.dart` counter template and nothing else. Any additional file — or

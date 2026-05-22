@@ -33,6 +33,9 @@ allowed there (see the layer rules in the project's
   A widget that imports `ex_systems/` directly, imports another screen, or
   prepares data in `initState`/`build` → **dirty**.
 - `app_ports/` — `dart:*`, `domain/`, `app_ports/`. Any Flutter → dirty.
+- `app/` — composition root / DI may import any layer. There is no purity
+  test for `app/` (see `enforcement.md`), so a correctly-targeted `app/`
+  file is always clean — it can only be blocked, never dirty.
 
 A file is **blocked** if it is clean in isolation but depends on a file that
 is itself dirty or not yet moved.

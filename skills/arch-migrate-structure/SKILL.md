@@ -1,6 +1,6 @@
 ---
 name: arch-migrate-structure
-description: Use to lay out the layer-folder structure of an existing Flutter project during migration — creates the layer folders, drops the architecture docs, marker and purity tests, and moves clean files into their layers. Normally launched by the arch-migrate orchestrator.
+description: Use to lay out the layer-folder structure of an existing Flutter project during migration — creates the layer folders, drops the architecture docs, marker and purity tests, and moves clean files into their layers.
 ---
 
 # arch-migrate-structure
@@ -54,6 +54,9 @@ code; the project has its own. Commit.
   and `CLAUDE.md` containing exactly `@AGENTS.md`. If the project already has
   an `AGENTS.md` or `CLAUDE.md`, **append** the architecture section — do not
   clobber existing content.
+- Run `flutter test` once now. The layer folders are still empty, so the
+  freshly-dropped purity suite must pass trivially — this confirms the suite
+  itself is sound before any moves. If it is not green, stop and report.
 - Commit.
 
 ### 4. Classify every file in `lib/`
@@ -84,8 +87,8 @@ service extraction), and where it will go afterward.
 
 Set `Статус структуры: готова` — a finished pass means the structure phase
 is **done**, even though dirty files remain listed for later extraction. The
-remaining files are extraction work, not structure work. Use `в работе` only
-if the pass was interrupted before all clean files were moved. Commit.
+remaining files are extraction work, not structure work. The ledger is the
+last thing written, so its presence always means the pass completed. Commit.
 
 ### 7. Report
 
