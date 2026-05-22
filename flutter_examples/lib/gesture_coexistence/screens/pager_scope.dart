@@ -11,6 +11,7 @@ class PagerScope extends InheritedWidget {
     super.key,
     required this.onOverflowDelta,
     required this.onOverflowRelease,
+    required this.isPagerTransitioning,
     required super.child,
   });
 
@@ -19,6 +20,11 @@ class PagerScope extends InheritedWidget {
 
   /// Отпускание пальца после горизонтального жеста: скорость в px/sec.
   final ValueChanged<double> onOverflowRelease;
+
+  /// Идёт ли сейчас snap-анимация пейджера. Полотно читает это на
+  /// pointer-down: во время транзишена горизонталь принадлежит side-Listener'у
+  /// хоста (он перебивает анимацию), а не overflow-форварду полотна.
+  final bool Function() isPagerTransitioning;
 
   static PagerScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<PagerScope>();
@@ -29,5 +35,6 @@ class PagerScope extends InheritedWidget {
   @override
   bool updateShouldNotify(PagerScope oldWidget) =>
       onOverflowDelta != oldWidget.onOverflowDelta ||
-      onOverflowRelease != oldWidget.onOverflowRelease;
+      onOverflowRelease != oldWidget.onOverflowRelease ||
+      isPagerTransitioning != oldWidget.isPagerTransitioning;
 }

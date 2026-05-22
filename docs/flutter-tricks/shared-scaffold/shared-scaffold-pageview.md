@@ -87,7 +87,8 @@ RootShell (StatefulWidget, owns PageController + SubStateController)
       └─ Scaffold
          ├─ body: Listener (outer, translucent)   <- GESTURE POINT #1:
          │  │                                        horizontal swipes on
-         │  │                                        tab3/4 (idle on outer 0)
+         │  │                                        tab3/4; also owns any
+         │  │                                        in-flight outer transition
          │  └─ PageView (NeverScrollableScrollPhysics, our PageController)
          │     ├─ SuperPage (route screen)
          │     │  └─ Scaffold
@@ -115,8 +116,21 @@ Why two points, and why it is deliberate:
   The stub pages tab3/4 have no super-page surface, and the outer `PageView`
   keeps `NeverScrollableScrollPhysics` (so it cannot conflict with point #2).
   They need only a horizontal swipe, so a lightweight outer `Listener` handles
-  it manually. It is idle while the outer page is 0 (the super-page), so the
-  two `Listener`s never overlap.
+  it manually. It steps aside only while the outer page is *settled* on 0 (the
+  super-page); the two `Listener`s never both drive a gesture.
+
+**Who owns an in-flight transition.** The point-#1 ↔ point-#2 handoff is
+decided at pointer-down and is gated on the outer `PageView` being *idle*, not
+on `pageController.page.round()`. `page` is fractional and animating during a
+snap, so a plain `round() == 0` would step point #1 aside halfway through a
+transition still travelling *toward* the super-page — and a re-touch would then
+reach only point #2, which moves `subState` but not the outer `PageController`,
+so the snap would finish ignoring the finger. While the outer `PageView`
+animates (`position.isScrollingNotifier`), point #1 keeps ownership: a re-touch
+interrupts the snap with `jumpTo`. `SubStatePager` sees `isOuterTransitioning()`
+true at pointer-down and marks the gesture inert, so it does not move `subState`
+in parallel. The handoff to point #2 takes effect only once the `PageView`
+settles.
 
 `currentIndex` of the BottomNav is computed from the outer position and the
 subState: outer 0 + subState < 0.5 → item 0, outer 0 + subState ≥ 0.5 → item 1,

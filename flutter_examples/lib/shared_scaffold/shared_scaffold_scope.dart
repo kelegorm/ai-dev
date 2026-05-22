@@ -14,12 +14,18 @@ class SharedScaffoldScope extends InheritedWidget {
     required this.subStateController,
     required this.onOverflowDelta,
     required this.onOverflowRelease,
+    required this.isOuterTransitioning,
     required super.child,
   });
 
   final SubStateController subStateController;
   final ValueChanged<double> onOverflowDelta;
   final ValueChanged<double> onOverflowRelease;
+
+  /// Идёт ли сейчас snap-анимация outer PageView. SubStatePager читает это на
+  /// pointer-down: во время outer-транзишена горизонталь принадлежит outer
+  /// Listener'у (RootShell), а не subState'у.
+  final bool Function() isOuterTransitioning;
 
   static SharedScaffoldScope of(BuildContext context) {
     final scope = context

@@ -27,10 +27,11 @@ observe raw pointer events and classify intent in your own code.
 This example pairs with the [super-page trick](../shared-scaffold/shared-scaffold-pageview.md).
 Both were extracted from one prototype and share a seam: the horizontal
 gesture, once it runs out of local room, is *forwarded* outward through a pair
-of callbacks (`onOverflowDelta` / `onOverflowRelease`). Here the receiver of
-that overflow is plain `auto_route` navigation; in the super-page trick it is a
-shared outer `PageView`. The callback contract is identical, which is what lets
-the two tricks be combined in a real app.
+of callbacks (`onOverflowDelta` / `onOverflowRelease`). Here the receiver is a
+bounded 3-page `PageView` pager (Left ─ Canvas ─ Right); in the super-page
+trick it is the shared outer `PageView` carrying the routes. The callback
+contract is identical, which is what lets the two tricks be combined in a real
+app.
 
 Reference implementation —
 `flutter_examples/lib/gesture_coexistence/canvas/canvas_overlay.dart`.
@@ -78,25 +79,35 @@ All canvas gestures live in a **single** entry point — the `Listener` inside
 does not conflict with it, because the translucent `Listener` only observes).
 
 ```
-CanvasScreen (route screen)           <- hosts the canvas, owns navigation
-└─ Scaffold
-   ├─ appBar: AppBar
-   └─ body: CanvasOverlay             <- ALL canvas gesture handling lives here
-      └─ Listener (translucent)       <- single pointer-event entry point:
-         │                               horizontal swipe, vertical pan,
-         │                               pinch, overflow-forwarding
-         └─ ClipRect
-            └─ Transform              <- scroll offset (translateY)
-               └─ OversizedHitTestBox
-                  └─ CanvasContent
-                     └─ Stripe × N    <- each has its own
-                                         GestureDetector.onTap (tap only)
+PagerShell (@RoutePage shell — bounded 3-page pager: Left ─ Canvas ─ Right)
+└─ PagerScope (InheritedWidget — overflow callbacks + isPagerTransitioning)
+   └─ Listener (side, translucent)      <- swipes on the Left/Right screens;
+      │                                    also owns any in-flight pager snap
+      └─ PageView (NeverScrollableScrollPhysics, our PageController)
+         ├─ LeftScreen / RightScreen    <- plain Scaffolds, no Listener
+         └─ CanvasScreen (route screen) <- the middle page, hosts the canvas
+            └─ Scaffold
+               ├─ appBar: AppBar
+               └─ body: CanvasOverlay   <- ALL canvas gesture handling lives here
+                  └─ Listener (translucent)  <- single pointer-event entry point:
+                     │                          horizontal swipe, vertical pan,
+                     │                          pinch, overflow-forwarding
+                     └─ ClipRect
+                        └─ Transform     <- scroll offset (translateY)
+                           └─ OversizedHitTestBox
+                              └─ CanvasContent
+                                 └─ Stripe × N  <- each has its own
+                                                   GestureDetector.onTap (tap)
 ```
 
 The horizontal swipe is not consumed by the canvas at all — every horizontal
-delta is forwarded to `CanvasScreen`, which accumulates it and, on release,
-decides whether to push the neighbouring `auto_route` route. The canvas widget
-knows nothing about navigation.
+delta is forwarded, through `PagerScope`, to `PagerShell`, which moves its
+bounded `PageView` directly (`jumpTo` during the drag, `animateToPage` to snap)
+between the Left / Canvas / Right pages. The canvas widget knows nothing about
+navigation. Note the two gesture entry points: the side `Listener` in
+`PagerShell` (swipes on the side screens, and ownership of any in-flight pager
+snap) and the canvas `Listener` here — the handoff between them is the
+[transition-ownership rule](../shared-scaffold/shared-scaffold-pageview.md).
 
 ### Vertical-only zoom as layout scaling
 
@@ -143,14 +154,24 @@ trimmed example the canvas is screen-width, so the box is not strictly needed
 for overflow today — it is kept because it is part of the trick and becomes
 load-bearing the moment the content grows wider than the viewport.)
 
-### PanIntent.consumed — the pinch tail
+### PanIntent.consumed — the inert gesture
 
-When one of two fingers is lifted (2→1), the remaining finger must not be
-treated as a new pan: otherwise releasing the pinch tail would accidentally
-trigger navigation or start a fling. For this there is an inert
-`PanIntent.consumed` state — it is assigned to the remaining finger, its
-movement is ignored, and on the full release the system is still settled to a
-stable position.
+`PanIntent.consumed` marks a single-finger gesture as inert: its movement is
+ignored, and on full release the system still settles to a stable position. It
+serves two cases:
+
+- **The pinch tail.** When one of two fingers is lifted (2→1), the remaining
+  finger must not be treated as a new pan — otherwise releasing the pinch tail
+  would accidentally trigger navigation or start a fling. The survivor is
+  marked `consumed`.
+- **A gesture started during a pager transition.** If a pointer goes down while
+  the host pager is mid-snap, the canvas marks it `consumed` at once: during a
+  transition the horizontal swipe belongs to the host's own `Listener` (it
+  interrupts the snap via `jumpTo`), so the canvas must not forward overflow in
+  parallel. See
+  [shared-scaffold-pageview.md](../shared-scaffold/shared-scaffold-pageview.md)
+  for the transition-ownership rule — the host reports `isPagerTransitioning()`
+  to the canvas through the same scope that carries the overflow callbacks.
 
 ## Pitfalls
 
@@ -165,9 +186,14 @@ See [gesture-coexistence-pitfalls.md](gesture-coexistence-pitfalls.md).
   layout zoom (scaling of heights/paddings/font).
 - `flutter_examples/lib/gesture_coexistence/canvas/oversized_hit_test_box.dart`
   — custom `RenderProxyBox` for hit testing outside the parent.
+- `flutter_examples/lib/gesture_coexistence/screens/pager_shell.dart` —
+  the host: the bounded 3-page `PageView`, the side `Listener`, pager snapping,
+  and transition ownership (`isPagerTransitioning`).
+- `flutter_examples/lib/gesture_coexistence/screens/pager_scope.dart` —
+  the `InheritedWidget` carrying the overflow callbacks + `isPagerTransitioning`
+  down to the canvas.
 - `flutter_examples/lib/gesture_coexistence/screens/canvas_screen.dart` —
-  the host: accumulates the forwarded horizontal gesture and drives
-  `auto_route` navigation.
+  the middle page: hosts `CanvasOverlay` and wires it to `PagerScope`.
 - `flutter_examples/lib/gesture_coexistence/gestures/pan_intent.dart` —
   `PanIntent`, `classifyPanIntent`.
 - `flutter_examples/lib/gesture_coexistence/gestures/velocity_tracker_1d.dart`

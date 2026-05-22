@@ -123,10 +123,18 @@ class _RootShellState extends State<RootShell>
 
   // --- Outer Listener (свайпы на tab3/4) ---------------------------------
 
+  /// Идёт ли сейчас snap-анимация outer PageView (`animateToPage`), а не покой
+  /// или ручной drag через `jumpTo`.
+  bool get _isOuterAnimating =>
+      _pc.hasClients && _pc.position.isScrollingNotifier.value;
+
   void _onOuterPointerDown(PointerDownEvent e) {
-    // Свайпами на SuperPage управляет SubStatePager (subState + overflow).
-    // Outer Listener трогает только tab3/4.
-    if (_outerPage.value.round() == 0) return;
+    // На устойчиво стоящей SuperPage свайпами управляет SubStatePager
+    // (subState + overflow) — outer Listener молчит. Но пока идёт snap-анимация
+    // к page 0, эта оболочка остаётся владельцем жеста: повторный тач перебивает
+    // анимацию через jumpTo, иначе она доигрывает до конца игнорируя палец
+    // (SubStatePager не владеет PageController'ом напрямую).
+    if (_outerPage.value.round() == 0 && !_isOuterAnimating) return;
     _outerPointers[e.pointer] = e.position;
     if (_outerPointers.length == 1) {
       _outerStart = e.position;
@@ -213,6 +221,7 @@ class _RootShellState extends State<RootShell>
       subStateController: _subState,
       onOverflowDelta: _onOverflowDelta,
       onOverflowRelease: _onOverflowRelease,
+      isOuterTransitioning: () => _isOuterAnimating,
       child: AutoTabsRouter.builder(
         routes: const [SuperPageRoute(), Tab3Route(), Tab4Route()],
         builder: (context, _, tabsRouter) {

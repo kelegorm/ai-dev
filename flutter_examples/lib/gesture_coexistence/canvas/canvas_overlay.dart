@@ -28,6 +28,7 @@ class CanvasOverlay extends StatefulWidget {
     super.key,
     required this.onOverflowDelta,
     required this.onOverflowRelease,
+    required this.isPagerTransitioning,
     this.onStripeTap,
   });
 
@@ -38,6 +39,13 @@ class CanvasOverlay extends StatefulWidget {
   /// Вызывается на отпускании пальца после горизонтального жеста:
   /// [velocityDxPerSec] — горизонтальная скорость в px/sec.
   final ValueChanged<double> onOverflowRelease;
+
+  /// Идёт ли сейчас snap-анимация пейджера. Если да — на pointer-down полотно
+  /// сразу помечает жест как [PanIntent.consumed] (инертный): пока идёт
+  /// транзишен, горизонталь принадлежит side-Listener'у хоста (он перебивает
+  /// анимацию через jumpTo). Иначе overflow-форвард полотна двигал бы пейджер
+  /// параллельно с side-Listener'ом — двойной jumpTo.
+  final bool Function() isPagerTransitioning;
 
   final ValueChanged<int>? onStripeTap;
 
@@ -143,7 +151,11 @@ class CanvasOverlayState extends State<CanvasOverlay>
     _pointers[e.pointer] = e.position;
     if (_pointers.length == 1) {
       _singleStart = e.position;
-      _singleIntent = PanIntent.undetermined;
+      // Во время snap-анимации пейджера горизонталь принадлежит side-Listener'у
+      // хоста — полотно сразу делает жест инертным (как хвост pinch'а).
+      _singleIntent = widget.isPagerTransitioning()
+          ? PanIntent.consumed
+          : PanIntent.undetermined;
       _horizontalMovedDuringGesture = false;
       _horizontalVelocity.reset();
       _verticalVelocity.reset();

@@ -26,5 +26,16 @@ Companion to [shared-scaffold-pageview.md](shared-scaffold-pageview.md).
 - **An interrupted outer gesture (pointer cancel)** — the snap to an integer
   page must take the same path as on pointer up, otherwise the `PageView`
   sticks on a fractional position.
+- **A handoff guard that reads the *animating* page.** The outer `Listener`
+  hands gestures to the super-page by `pageController.page.round() == 0`. But
+  `page` is fractional and animating during a snap — `round()` flips to 0
+  halfway through a transition still travelling *toward* the super-page,
+  disabling the outer `Listener` mid-animation. The super-page's `SubStatePager`
+  can move `subState` but not the outer `PageController`, so the snap finishes
+  ignoring the finger and chained swipes are dropped until the page settles
+  exactly. Gate the handoff on the outer `PageView` being idle
+  (`position.isScrollingNotifier`); while it animates, the outer `Listener`
+  keeps ownership (a re-touch interrupts via `jumpTo`) and `SubStatePager` marks
+  the gesture inert so it does not drive `subState` in parallel.
 - **A stub page without `AutomaticKeepAliveClientMixin`** — it is recreated
   when swiped back to (scroll position is lost).

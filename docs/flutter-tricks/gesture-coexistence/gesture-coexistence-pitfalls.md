@@ -24,5 +24,17 @@ Companion to [gesture-coexistence.md](gesture-coexistence.md).
   is positive.
 - **The 2→1 pinch tail** — the remaining finger must be moved to `consumed`,
   otherwise a stray navigation or fling occurs.
+- **A handoff guard that reads the *animating* page.** The host hands gestures
+  to the canvas by `pageController.page.round() == <canvas page>`. But `page`
+  is fractional and animating during a snap, so `round()` flips mid-animation
+  and the host's own `Listener` steps aside before the snap finishes. A
+  re-touch then reaches only the canvas, which forwards overflow but does not
+  own the host `PageController`, so the snap plays out ignoring the finger and
+  chained swipes are dropped. Gate the handoff on the pager being idle
+  (`position.isScrollingNotifier`); while it animates the host `Listener` keeps
+  ownership (a re-touch interrupts via `jumpTo`) and the canvas marks the
+  gesture `consumed` so it does not forward overflow in parallel. With the
+  canvas in the *middle* of the pager this is sharper than at an edge — every
+  cross-pager journey passes through the canvas seam.
 - **A `page`/position read before the first layout** — guard with `?? 0.0`
   and `hasClients` everywhere a controller is touched.

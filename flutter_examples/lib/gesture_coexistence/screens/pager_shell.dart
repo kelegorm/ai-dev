@@ -118,9 +118,21 @@ class _PagerShellState extends State<PagerShell> {
 
   // --- Side-Listener (свайп назад с боковых экранов) ---------------------
 
+  /// Идёт ли сейчас snap-анимация пейджера (`animateToPage`), а не покой или
+  /// ручной drag через `jumpTo`.
+  bool get _isPagerAnimating =>
+      _pc.hasClients && _pc.position.isScrollingNotifier.value;
+
   void _onSidePointerDown(PointerDownEvent e) {
-    // На канвас-странице свайпами управляет собственный raw-Listener полотна.
-    if ((_pc.page ?? kCanvasPagerPage).round() == kCanvasPagerPage) return;
+    // На устойчиво стоящей канвас-странице свайпами управляет собственный
+    // raw-Listener полотна — side-Listener молчит. Но пока идёт snap-анимация
+    // пейджера, side-Listener остаётся владельцем жеста: повторный тач
+    // перебивает анимацию через jumpTo, иначе она доигрывает до конца
+    // игнорируя палец (полотно не владеет PageController'ом напрямую).
+    if ((_pc.page ?? kCanvasPagerPage).round() == kCanvasPagerPage &&
+        !_isPagerAnimating) {
+      return;
+    }
     _sidePointers[e.pointer] = e.position;
     if (_sidePointers.length == 1) {
       _sideStart = e.position;
@@ -215,6 +227,7 @@ class _PagerShellState extends State<PagerShell> {
       body: PagerScope(
         onOverflowDelta: _onOverflowDelta,
         onOverflowRelease: _onOverflowRelease,
+        isPagerTransitioning: () => _isPagerAnimating,
         child: Listener(
           behavior: HitTestBehavior.translucent,
           onPointerDown: _onSidePointerDown,

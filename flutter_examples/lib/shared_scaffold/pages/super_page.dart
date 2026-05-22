@@ -23,6 +23,7 @@ class SuperPageScreen extends StatelessWidget {
       subStateController: scope.subStateController,
       onOverflowDelta: scope.onOverflowDelta,
       onOverflowRelease: scope.onOverflowRelease,
+      isOuterTransitioning: scope.isOuterTransitioning,
     );
   }
 }
@@ -44,11 +45,16 @@ class SuperPage extends StatelessWidget {
     required this.subStateController,
     required this.onOverflowDelta,
     required this.onOverflowRelease,
+    required this.isOuterTransitioning,
   });
 
   final SubStateController subStateController;
   final ValueChanged<double> onOverflowDelta;
   final ValueChanged<double> onOverflowRelease;
+
+  /// Идёт ли сейчас snap-анимация outer PageView — пробрасывается в
+  /// [SubStatePager], чтобы тот не двигал subState во время outer-транзишена.
+  final bool Function() isOuterTransitioning;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +64,7 @@ class SuperPage extends StatelessWidget {
         subStateController: subStateController,
         onOverflowDelta: onOverflowDelta,
         onOverflowRelease: onOverflowRelease,
+        isOuterTransitioning: isOuterTransitioning,
         tab1: const TabList(label: 'Tab 1', accent: tab1Accent),
         tab2: const TabList(label: 'Tab 2', accent: tab2Accent),
       ),

@@ -67,6 +67,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
       body: CanvasOverlay(
         onOverflowDelta: _onOverflowDelta,
         onOverflowRelease: _onOverflowRelease,
+        isPagerTransitioning: PagerScope.of(context).isPagerTransitioning,
         onStripeTap: _onStripeTap,
       ),
     );

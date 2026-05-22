@@ -25,6 +25,7 @@ class SubStatePager extends StatefulWidget {
     required this.subStateController,
     required this.onOverflowDelta,
     required this.onOverflowRelease,
+    required this.isOuterTransitioning,
     required this.tab1,
     required this.tab2,
   });
@@ -32,6 +33,14 @@ class SubStatePager extends StatefulWidget {
   final SubStateController subStateController;
   final ValueChanged<double> onOverflowDelta;
   final ValueChanged<double> onOverflowRelease;
+
+  /// Идёт ли сейчас snap-анимация outer PageView. Если да — на pointer-down
+  /// pager делает жест инертным: пока идёт outer-транзишен, горизонталь
+  /// принадлежит outer Listener'у хоста (он перебивает анимацию через jumpTo).
+  /// Иначе палец параллельно увёл бы subState и мог случайно переключить
+  /// tab1↔tab2.
+  final bool Function() isOuterTransitioning;
+
   final Widget tab1;
   final Widget tab2;
 
@@ -51,6 +60,10 @@ class _SubStatePagerState extends State<SubStatePager> {
   bool _outerMovedDuringGesture = false;
   final VelocityTracker1D _horizontalVelocity = VelocityTracker1D();
 
+  // Жест начат во время outer-транзишена → инертен: subState не двигаем,
+  // горизонталь принадлежит outer Listener'у хоста.
+  bool _gestureBelongsToOuter = false;
+
   double _viewportWidth = 0.0;
 
   void _onPointerDown(PointerDownEvent e) {
@@ -61,6 +74,7 @@ class _SubStatePagerState extends State<SubStatePager> {
       _singleIntent = PanIntent.undetermined;
       _subStateAtGestureStart = _subState.value.value;
       _outerMovedDuringGesture = false;
+      _gestureBelongsToOuter = widget.isOuterTransitioning();
       _horizontalVelocity.reset();
     }
   }
@@ -69,6 +83,8 @@ class _SubStatePagerState extends State<SubStatePager> {
     if (!_pointers.containsKey(e.pointer)) return;
     _pointers[e.pointer] = e.position;
     if (_pointers.length >= 2) return;
+    // Жест отдан outer Listener'у — pager его не трогает.
+    if (_gestureBelongsToOuter) return;
 
     if (_singleIntent == PanIntent.undetermined) {
       _singleIntent = classifyPanIntent(
