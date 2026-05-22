@@ -59,3 +59,45 @@
 Базовую идею «слои + односторонние зависимости» агент понимает сам —
 скилл не объясняет «зачем», он фиксирует **что именно** и **где
 остановиться**.
+
+---
+
+# GREEN — результаты теста со скиллами
+
+Дата: 2026-05-22. Фикстур: `arch-migrate-fixture`.
+
+## GREEN — структурный скилл (`arch-migrate-structure`)
+
+Прогон на копии фикстура. Все пункты spec пройдены:
+
+- [x] `lib/{app,app_ports,domain,ex_systems,ui}/` созданы (с `.gitkeep`).
+- [x] `note.dart` → `lib/domain/notes/`, `notes_repository.dart` →
+  `lib/ex_systems/storage/`, `note_detail_page.dart` → `lib/ui/note_detail/`.
+- [x] `home_page.dart` остался в `lib/` (грязный) и записан в леджер.
+- [x] `docs/architecture/{README,tech,ui,enforcement}.md` — README с маркером.
+- [x] `test/architecture/` (5 файлов), `packageName` проставлен.
+- [x] `AGENTS.md` + `CLAUDE.md` (`@AGENTS.md`).
+- [x] Строгий `analysis_options.yaml` не добавлен.
+- [x] `flutter analyze` чистый; `flutter test` — 4 purity-теста зелёные.
+- [x] Леджер аккуратный, по шаблону; импорты `home_page.dart` переписаны
+  на package-пути перенесённых файлов.
+
+## GREEN — оркестратор (`arch-migrate`)
+
+Smoke-тест решений на трёх состояниях — все три решения верные:
+empty → «greenfield, arch-bootstrap»; migrated → «структура готова,
+рапорт остатка»; messy → «запустить структурный скилл».
+
+## Найденные расхождения (вход в Task 6)
+
+1. **Семантика статуса леджера.** Структурный скилл проставил
+   `Статус структуры: в работе`, хотя структурную фазу завершил (все
+   чистые файлы перенесены, грязный — в леджере). Должно быть `готова`:
+   статус отражает завершённость прохода структурного скилла, а не то,
+   что все файлы доехали до слоёв. Уточнить в `ledger-template.md` и в
+   SKILL.md шаг 6.
+2. **Критерий «bare flutter create».** Строка 1 таблицы решений
+   оркестратора («`lib/` empty / bare `flutter create`») не отделена
+   критерием от строки 2 («real code»). Проект `flutter create` с мелкой
+   правкой — неоднозначен. Добавить критерий: bare = `lib/` содержит
+   только сгенерированный `main.dart`, ничего больше.
