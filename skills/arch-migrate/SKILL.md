@@ -29,6 +29,10 @@ Gather, without changing anything:
 | Marker present, ledger lists unfinished files | Structure done. Report the remaining work (bloc/service extraction) from the ledger to the user. The extraction skills do not exist yet — say so plainly. Stop. |
 | Marker present, ledger says structure готова and lists nothing remaining | Migration complete. Report. Stop. |
 
+**"Bare `flutter create`"** means `lib/` holds only the generated
+`main.dart` counter template and nothing else. Any additional file — or
+substantive edits to that `main.dart` — counts as real code (row 2).
+
 ### 3. Dispatch the structure worker
 
 Launch a sub-agent (general-purpose) whose task is to run the

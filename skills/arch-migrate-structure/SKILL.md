@@ -80,7 +80,12 @@ isolation but its dependency is stuck, it is blocked — it waits in the ledger.
 Create `docs/architecture/migration-progress.md` from
 `references/ledger-template.md`: what was moved where, and every file still in
 `lib/` root — why it is stuck (dirty / blocked), what it needs (bloc or
-service extraction), and where it will go afterward. Commit.
+service extraction), and where it will go afterward.
+
+Set `Статус структуры: готова` — a finished pass means the structure phase
+is **done**, even though dirty files remain listed for later extraction. The
+remaining files are extraction work, not structure work. Use `в работе` only
+if the pass was interrupted before all clean files were moved. Commit.
 
 ### 7. Report
 
