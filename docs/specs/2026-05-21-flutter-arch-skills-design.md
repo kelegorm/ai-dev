@@ -20,13 +20,14 @@
   реализует организатор `arch-migrate` + уровень 1 (структура).
 
 **Закрытый список «3 скилла + 1 хук» отменён** (см. ниже и спеку
-arch-migrate). Семейство теперь: организаторы `arch-bootstrap` /
-`arch-migrate` / `arch-audit` + технические скиллы `arch-fix-boundaries` /
-`arch-extract-bloc` / `arch-extract-service` + хук.
+arch-migrate). Миграция = оркестратор `arch-migrate` + воркер-скиллы,
+которые он запускает саб-агентами: `arch-migrate-structure` (структура),
+позже `arch-extract-bloc` / `arch-extract-service` (выделение). Границы
+как отдельный шаг выкинуты. Плюс `arch-audit` и хук.
 
 **Не начато — каждое своя итерация со своим brainstorm:**
-- `arch-migrate` уровни 2–3 и технические скиллы (`arch-fix-boundaries`,
-  `arch-extract-bloc`, `arch-extract-service`).
+- Воркеры выделения `arch-extract-bloc` / `arch-extract-service` и
+  прокачка оркестратора под их запуск.
 - `arch-audit` — поддержка и аудит дрейфа.
 - хук-гейт.
 
@@ -87,10 +88,10 @@ Flutter-приложения в единой хорошей архитектур
 
 **УСТАРЕЛО (отменено 2026-05-22).** Изначально список был закрыт: «3
 скилла + 1 хук», техники рефакторинга — reference-материал внутри
-скиллов. Brainstorm `arch-migrate` это пересмотрел: техники, у которых
-есть собственное намерение пользователя и которые зовут самостоятельно
-(`arch-fix-boundaries`, `arch-extract-bloc`, `arch-extract-service`), —
-отдельные скиллы. Актуальная карта семейства — в
+скиллов. Brainstorm `arch-migrate` это пересмотрел: миграция — это
+оркестратор + воркер-скиллы, которые он запускает саб-агентами
+(`arch-migrate-structure`, позже `arch-extract-bloc` /
+`arch-extract-service`). Актуальная карта семейства — в
 `docs/specs/2026-05-22-arch-migrate-design.md`.
 
 ### `arch-bootstrap`
